@@ -37,4 +37,4 @@ console.log(target.$myService); // [1,2,3,4,5]
 
 ## License
 [The MIT License](http://opensource.org/licenses/MIT)
-Copyright (c) 2015-2016 Ivan Zakharchenko
+Copyright (c) 2015-present Ivan Zakharchenko
