@@ -1,0 +1,53 @@
+{
+  "name": "nodic",
+  "version": "0.1.0",
+  "description": "Service Container for browser an node",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -r should --compilers js:babel-core/register -R spec -u bdd test/",
+    "build": "gulp",
+    "patch-release": "npm run test && npm version patch && git push && git push --tags && gulp && cd build && npm publish"
+  },
+  "author": "Ivan Zakharchenko <3axap4eHko.development@gmail.com> (http://potofcode.com/)",
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 6.10.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.2.1",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^3.0.1",
+    "gulp-sourcemaps": "^2.4.1",
+    "mocha": "^3.2.0",
+    "should": "^11.2.0",
+    "yyf-core": "^2.0.11"
+  },
+  "keywords": [
+    "di",
+    "dependency",
+    "injection",
+    "service",
+    "container"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3axap4eHko/nodic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/3axap4eHko/nodic/issues"
+  },
+  "homepage": "https://github.com/3axap4eHko/nodic#readme",
+  "directories": {
+    "test": "test"
+  }
+}
