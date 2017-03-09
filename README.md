@@ -35,6 +35,22 @@ console.log(target.$myService); // [1,2,3,4,5]
 `resolveArg (arg)` - returns service instance with name `arg` or `arg`
 `services` - list of services names
 
+
+## Example
+``` javascript
+import { DI, createService } from 'nodic';
+
+const di = new DI();
+const serviceDate = createService('date', { factory: () => new Date(), tags: ['date'] });
+const serviceCurDate = createService('currentDate', { factory: () => new Date(), shared: false, tags: ['date'] });
+
+di.register(serviceDate);
+di.register(serviceCurDate);
+
+console.log(di.get('date') === di.get('date')); // true
+console.log(di.get('currentDate') === di.get('currentDate')); // false
+```
+
 ## License
 [The MIT License](http://opensource.org/licenses/MIT)
 Copyright (c) 2015-present Ivan Zakharchenko

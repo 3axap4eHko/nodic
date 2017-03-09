@@ -1,5 +1,5 @@
 import { factory, merge } from 'yyf-core/reflection';
-import DI from '../src';
+import { DI, createService } from '../src';
 import TestService from './TestService';
 
 describe('DI test suite:', function () {
@@ -10,14 +10,14 @@ describe('DI test suite:', function () {
   describe('Manual service creation:', function () {
 
     it('Service should have a not empty string name', function () {
-      (() => DI.createService('test')).should.not.throw();
-      (() => DI.createService()).should.throw();
-      (() => DI.createService(1234)).should.throw();
-      (() => DI.createService('')).should.throw();
+      (() => createService('test')).should.not.throw();
+      (() => createService()).should.throw();
+      (() => createService(1234)).should.throw();
+      (() => createService('')).should.throw();
     });
 
     it('Service should have a default values', function () {
-      const service = DI.createService('test');
+      const service = createService('test');
       service.should.have.property('classOf', null);
       service.should.have.property('factory', null);
       service.should.have.property('instance', null);
@@ -28,23 +28,23 @@ describe('DI test suite:', function () {
 
     it('Service should have a factory or constructor or shared instance for resolving', function () {
 
-      (() => DI.createService('test').resolve(di))
+      (() => createService('test').resolve(di))
         .should.throw();
 
       const args = [1, 2, 3, 4, 5];
 
       (() => {
-        const service = DI.createService('test_class', { classOf: Array, args });
+        const service = createService('test_class', { classOf: Array, args });
         di.resolveService(service).join().should.equal(args.join());
       }).should.not.throw();
 
       (() => {
-        const service = DI.createService('test_factory', { factory: factory(Array.prototype.constructor), args });
+        const service = createService('test_factory', { factory: factory(Array.prototype.constructor), args });
         di.resolveService(service).join().should.equal(args.join());
       }).should.not.throw();
 
       (() => {
-        const service = DI.createService('test_instance', { instance: args });
+        const service = createService('test_instance', { instance: args });
         di.resolveService(service).join().should.equal(args.join());
       }).should.not.throw();
     });
@@ -52,17 +52,17 @@ describe('DI test suite:', function () {
     it('Service should have a factory or constructor or shared instance as module name for resolving', function () {
       const args = [1, 2, 3, 4, 5];
       (() => {
-        const service = DI.createService('test_class', { classOf: TestService, args: args });
+        const service = createService('test_class', { classOf: TestService, args: args });
         di.resolveService(service).join().should.equal(args.join());
       }).should.not.throw();
 
       (() => {
-        const service = DI.createService('test_factory', { factory: TestService.Factory, args: args });
+        const service = createService('test_factory', { factory: TestService.Factory, args: args });
         di.resolveService(service).join().should.equal(args.join());
       }).should.not.throw();
 
       (() => {
-        const service = DI.createService('test_instance', { instance: TestService.Array });
+        const service = createService('test_instance', { instance: TestService.Array });
         di.resolveService(service).join().should.equal(args.join());
       }).should.not.throw();
     });

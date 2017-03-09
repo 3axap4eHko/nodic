@@ -48,57 +48,57 @@ function getInstance(service, args) {
 
 const _Services = Symbol('services');
 
-export default class DI {
+export function createService(name, { classOf = null, factory = null, shared = true, instance = null, args = [], tags = [] } = {}) {
+  if (!isNotEmptyString(name)) {
+    throw new Error(`Service name should be a not empty string but '${name}' given`);
+  }
+  const properties = {
+    name,
+    classOf,
+    factory,
+    shared,
+    instance
+  };
+  if (!isStructure(args)) {
+    properties.args = [args];
+  } else {
+    properties.args = Array.from(args || []);
+  }
+  properties.tags = Array.from(tags || []);
+  return {
+    get name() {
+      return properties.name;
+    },
+    get classOf() {
+      return properties.classOf;
+    },
+    get factory() {
+      return properties.factory;
+    },
+    get args() {
+      return properties.args;
+    },
+    get tags() {
+      return properties.tags;
+    },
+    get shared() {
+      return properties.shared;
+    },
+    set shared(value) {
+      properties.shared = value;
+    },
+    get instance() {
+      return properties.instance;
+    },
+    set instance(value) {
+      properties.instance = value;
+    }
+  };
+}
+
+export class DI {
   constructor() {
     this[_Services] = {};
-  }
-
-  static createService(name, { classOf = null, factory = null, shared = true, instance = null, args = [], tags = [] } = {}) {
-    if (!isNotEmptyString(name)) {
-      throw new Error(`Service name should be a not empty string but '${name}' given`);
-    }
-    const properties = {
-      name,
-      classOf,
-      factory,
-      shared,
-      instance
-    };
-    if (!isStructure(args)) {
-      properties.args = [args];
-    } else {
-      properties.args = Array.from(args || []);
-    }
-    properties.tags = Array.from(tags || []);
-    return {
-      get name() {
-        return properties.name;
-      },
-      get classOf() {
-        return properties.classOf;
-      },
-      get factory() {
-        return properties.factory;
-      },
-      get args() {
-        return properties.args;
-      },
-      get tags() {
-        return properties.tags;
-      },
-      get shared() {
-        return properties.shared;
-      },
-      set shared(value) {
-        properties.shared = value;
-      },
-      get instance() {
-        return properties.instance;
-      },
-      set instance(value) {
-        properties.instance = value;
-      }
-    };
   }
 
   proxifyService(target, serviceName) {
@@ -114,14 +114,18 @@ export default class DI {
   }
 
   register(name, options) {
+    if (typeof name === 'object') {
+      options = name;
+      name = options.name;
+    }
     this.proxifyService(this, name);
-    this[_Services][name] = DI.createService(name, options);
+    this[_Services][name] = createService(name, options);
 
     return this[_Services][name];
   }
 
   set(name, instance, options) {
-    const service = DI.createService(name, options);
+    const service = createService(name, options);
     service.instance = instance;
     service.shared = true;
     this[_Services][name] = service;
@@ -138,11 +142,11 @@ export default class DI {
   }
 
   find(callback) {
-    return pairs(this[_Services]).filter(({key, value}) => callback(value, key));
+    return pairs(this[_Services]).filter(({ key, value }) => callback(value, key));
   }
 
   findFirst(callback) {
-    return pairs(this[_Services]).find(({key, value}) => callback(value, key));
+    return pairs(this[_Services]).find(({ key, value }) => callback(value, key));
   }
 
   resolveService(service, args) {
