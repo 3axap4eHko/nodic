@@ -1,12 +1,13 @@
 {
   "name": "nodic",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Service Container for browser an node",
   "main": "index.js",
   "scripts": {
     "test": "mocha -r should --compilers js:babel-core/register -R spec -u bdd test/",
     "build": "gulp",
-    "patch-release": "npm run test && npm version patch && git push && git push --tags && gulp && cd build && npm publish"
+    "patch-release": "npm run test && npm version patch && git push && git push --tags && gulp && cd build && npm publish",
+    "precommit": "gulp && mocha -r should --compilers js:babel-core/register -R spec -u bdd test/"
   },
   "author": "Ivan Zakharchenko <3axap4eHko.development@gmail.com> (http://potofcode.com/)",
   "license": "MIT",
@@ -28,6 +29,7 @@
     "gulp-babel": "^6.1.2",
     "gulp-eslint": "^3.0.1",
     "gulp-sourcemaps": "^2.4.1",
+    "husky": "^0.13.2",
     "mocha": "^3.2.0",
     "should": "^11.2.0",
     "yyf-core": "^2.0.11"
