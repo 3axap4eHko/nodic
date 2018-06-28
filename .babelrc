@@ -3,11 +3,8 @@
     ["env",{
       "targets": {
         "browsers": ["last 2 versions"],
-        "node": 6
+        "node": 8
       }
     }]
-  ],
-  "plugins": [
-    "transform-object-rest-spread"
   ]
 }

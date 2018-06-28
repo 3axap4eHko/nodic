@@ -1,13 +1,13 @@
 {
   "name": "nodic",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Service Container for browser an node",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r should --compilers js:babel-core/register -R spec -u bdd test/",
-    "build": "gulp",
-    "patch-release": "npm run test && npm version patch && git push && git push --tags && gulp && cd build && npm publish",
-    "precommit": "gulp && mocha -r should --compilers js:babel-core/register -R spec -u bdd test/"
+    "test": "mocha -r should -r babel-core/register -R spec -u bdd test/",
+    "build": "rm -rf *.js && babel src --out-dir . --ignore __tests__",
+    "patch-release": "npm run test && npm version patch && git push && git push --tags && npm run build && npm publish",
+    "precommit": "npm run test"
   },
   "author": "Ivan Zakharchenko <3axap4eHko.development@gmail.com> (http://potofcode.com/)",
   "license": "MIT",
@@ -21,17 +21,11 @@
     "node": ">= 6.10.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.1.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.2.1",
-    "del": "^2.2.2",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-eslint": "^3.0.1",
-    "gulp-sourcemaps": "^2.4.1",
-    "husky": "^0.13.2",
-    "mocha": "^3.2.0",
-    "should": "^11.2.0",
+    "husky": "^0.14.3",
+    "mocha": "^5.2.0",
+    "should": "^13.2.1",
     "yyf-core": "^2.0.11"
   },
   "keywords": [

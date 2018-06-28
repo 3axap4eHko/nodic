@@ -1,5 +1,5 @@
 import { factory, merge } from 'yyf-core/reflection';
-import { DI, createService } from '../src';
+import createService, { DI } from '../src';
 import TestService from './TestService';
 
 describe('DI test suite:', function () {
@@ -72,11 +72,11 @@ describe('DI test suite:', function () {
     const baseOptions = {
       classOf: Array.prototype.constructor,
       factory: factory(Array.prototype.constructor),
-      tags: ['array']
+      tags: ['array'],
     };
     it('Register empty array factory', function () {
       const options = merge({}, baseOptions),
-        service = di.register('empty_array', baseOptions);
+            service = di.register('empty_array', baseOptions);
 
       service.should.have.property('factory', options.factory);
       service.args.should.not.be.undefined();
@@ -84,7 +84,7 @@ describe('DI test suite:', function () {
     });
     it('Register empty array 10 length factory', function () {
       const options = merge({ args: [10] }, baseOptions),
-        service = di.register('empty_array_10', options);
+            service = di.register('empty_array_10', options);
 
       service.should.have.property('factory', options.factory);
       service.args[0].should.equal(10);
@@ -92,7 +92,7 @@ describe('DI test suite:', function () {
     });
     it('Register filled array 10 length factory', function () {
       const options = merge({ args: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] }, baseOptions),
-        service = di.register('filled_array_10', options);
+            service = di.register('filled_array_10', options);
 
       service.should.have.property('factory', options.factory);
       Object.keys(service.args).length.should.equal(10);
@@ -100,7 +100,7 @@ describe('DI test suite:', function () {
     });
     it('Register array of other services factory', function () {
       const options = merge({ args: ['$empty_array', '$empty_array_10', '$filled_array_10'] }, baseOptions),
-        service = di.register('filled_array_service', options);
+            service = di.register('filled_array_service', options);
 
       service.should.have.property('factory', options.factory);
       service.args[0].should.equal('$empty_array');
@@ -110,10 +110,10 @@ describe('DI test suite:', function () {
     });
     it('Register array services factory as factory', function () {
       const options = merge({
-          args: ['$empty_array', '$empty_array_10', '$filled_array_10'],
-          shared: false
-        }, baseOptions),
-        service = di.register('factory_array_service', options);
+              args: ['$empty_array', '$empty_array_10', '$filled_array_10'],
+              shared: false,
+            }, baseOptions),
+            service = di.register('factory_array_service', options);
 
       service.should.have.property('factory', options.factory);
       service.args[0].should.equal('$empty_array');

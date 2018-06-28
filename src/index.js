@@ -10,7 +10,6 @@ function pairs(data) {
   return keys(data).map(key => ({ key, value: data[key] }));
 }
 
-
 function create(Constructor, args) {
   Constructor = Function.prototype.bind.apply(Constructor, [null, ...args]);
   return new Constructor();
@@ -20,7 +19,7 @@ function defineGetter(object, property, getter) {
   return Object.defineProperty(object, property, {
     enumerable: false,
     configurable: false,
-    get: getter
+    get: getter,
   });
 }
 
@@ -46,9 +45,9 @@ function getInstance(service, args) {
   throw new Error(`Cannot create instance for '${service.name}'`);
 }
 
-const _Services = Symbol('services');
+const services = Symbol('services');
 
-export function createService(name, { classOf = null, factory = null, shared = true, instance = null, args = [], tags = [] } = {}) {
+export default function createService(name, { classOf = null, factory = null, shared = true, instance = null, args = [], tags = [] } = {}) {
   if (!isNotEmptyString(name)) {
     throw new Error(`Service name should be a not empty string but '${name}' given`);
   }
@@ -57,7 +56,7 @@ export function createService(name, { classOf = null, factory = null, shared = t
     classOf,
     factory,
     shared,
-    instance
+    instance,
   };
   if (!isStructure(args)) {
     properties.args = [args];
@@ -92,16 +91,17 @@ export function createService(name, { classOf = null, factory = null, shared = t
     },
     set instance(value) {
       properties.instance = value;
-    }
+    },
   };
 }
 
 export class DI {
+
   constructor() {
-    this[_Services] = {};
+    this[services] = {};
   }
 
-  proxifyService(target, serviceName) {
+  injectService(target, serviceName) {
     const serviceKey = `$${serviceName}`;
     if (!(serviceKey in target)) {
       defineGetter(target, serviceKey, () => this.get(serviceName));
@@ -110,7 +110,7 @@ export class DI {
   }
 
   has(name) {
-    return name in this[_Services];
+    return name in this[services];
   }
 
   register(name, options) {
@@ -118,18 +118,18 @@ export class DI {
       options = name;
       name = options.name;
     }
-    this.proxifyService(this, name);
-    this[_Services][name] = createService(name, options);
+    this.injectService(this, name);
+    this[services][name] = createService(name, options);
 
-    return this[_Services][name];
+    return this[services][name];
   }
 
   set(name, instance, options) {
     const service = createService(name, options);
     service.instance = instance;
     service.shared = true;
-    this[_Services][name] = service;
-    this.proxifyService(this, name);
+    this[services][name] = service;
+    this.injectService(this, name);
 
     return instance;
   }
@@ -138,15 +138,15 @@ export class DI {
     if (!this.has(name)) {
       throw new Error(`Service '${name}' not defined`);
     }
-    return this.resolveService(this[_Services][name], args);
+    return this.resolveService(this[services][name], args);
   }
 
   find(callback) {
-    return pairs(this[_Services]).filter(({ key, value }) => callback(value, key));
+    return pairs(this[services]).filter(({ key, value }) => callback(value, key));
   }
 
   findFirst(callback) {
-    return pairs(this[_Services]).find(({ key, value }) => callback(value, key));
+    return pairs(this[services]).find(({ key, value }) => callback(value, key));
   }
 
   resolveService(service, args) {
@@ -167,6 +167,6 @@ export class DI {
   }
 
   get services() {
-    return keys(this[_Services]);
+    return keys(this[services]);
   }
 }

@@ -1,28 +1,49 @@
 # NoDIC
-Service Container for browser an node
+
+0-dependency Service Container for browser an node
 
 ## Install
  $ npm install nodic
  
 ## Reference
 
-`service` is object contains following properties:
+### Service
+
+`service` is an object contains following properties:
  - name     - service name
- - classOf  - service class object
+ - classOf  - service class
  - factory  - service factory function
  - args     - array of service constructor or factory arguments
- - tags     - service tags
- - shared   - is service shared or every time should be instantiated
+ - tags     - service tags (array of strings)
+ - shared   - is the service shared or every time should be instantiated
  - instance - instance of service target
+
+---
+### DI
+
+```
+class DI {
+    has(name)
+    get(name, args)
+    set(name, instance, options) {
+    injectService(target, serviceName)
+    register(name, options)
+    find(callback)
+    findFirst(callback)
+    resolveService(service, args)
+    resolveArg(arg)
+    services
+}
+```
 
 `createService(name, options)` - creates service from provided arguments
 ``` javascript
 var service = DI.createService('myService', {classOf: Array, args: [[1,2,3,4,5]], tags: ['array']});
 ```
-`proxifyService(target, serviceName)` - proxify `target` properties starts from `$` sign to service getter
+`injectService(target, serviceName)` - proxify `target` properties starts from `$` sign to service getter
 ```
 var target = {$myService: null};
-DI.proxifyService(target, 'myService');
+DI.injectService(target, 'myService');
 console.log(target.$myService); // [1,2,3,4,5]
 ```
 `has (name)` - returns true if service exists
@@ -38,7 +59,7 @@ console.log(target.$myService); // [1,2,3,4,5]
 
 ## Example
 ``` javascript
-import { DI, createService } from 'nodic';
+import createService, { DI } from 'nodic';
 
 const di = new DI();
 const serviceDate = createService('date', { factory: () => new Date(), tags: ['date'] });
